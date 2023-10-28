@@ -1,37 +1,35 @@
 package ru.cvetkov.moving.objects.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.cvetkov.moving.objects.converters.DeviceConverter;
+import ru.cvetkov.moving.objects.dto.DeviceDtoRq;
+import ru.cvetkov.moving.objects.dto.DeviceDtoRs;
 import ru.cvetkov.moving.objects.entities.Device;
-import ru.cvetkov.moving.objects.services.DeviceService;
+import ru.cvetkov.moving.objects.exeptions.ResourceNotFoundException;
+import ru.cvetkov.moving.objects.services.DeviceServiceImpl;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/device")
 public class DeviceController {
 
-    private final DeviceService deviceService;
+    private final DeviceConverter deviceConverter;
+    private final DeviceServiceImpl deviceService;
 
-    public DeviceController(DeviceService deviceService) {
-        this.deviceService = deviceService;
-    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Device> getMovingDevice(@PathVariable Long id){
-        Optional<Device> device = deviceService.getById(id);
-        if (!device.isPresent()){
-            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(device.get(), HttpStatus.OK);
+    public DeviceDtoRs getDevice(@PathVariable Long id){
+        Device device = deviceService.getById(id).orElseThrow(() -> new ResourceNotFoundException("Device with id = " + id + " not found."));
+        return deviceConverter.entityToDto(device);
     }
 
     @GetMapping("/allDevices")
-    public List<Device> getAllDevices(){
-        return deviceService.getAllDevices();
+    public List<DeviceDtoRs> getAllDevices(){
+        return deviceService.getAllDevices().stream().map(deviceConverter::entityToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/page")
@@ -39,13 +37,21 @@ public class DeviceController {
         return deviceService.getPageAsListDevices(firstPage, pageSize);
     }
 
-    @PostMapping("/{name}")
-    public String createDevice(@PathVariable String name){
-        return deviceService.createDevice(new Device(name));
+    @PostMapping()
+    public DeviceDtoRs createDevice(@RequestBody DeviceDtoRq deviceDtoRq){
+        Device device = deviceService.createNewDevice(deviceDtoRq);
+        return deviceConverter.entityToDto(device);
     }
 
     @PutMapping
-    public String updateDevice(@PathVariable Device device){
-        return deviceService.updateDevice(device);
+    public DeviceDtoRs updateDevice(@RequestBody DeviceDtoRq deviceDtoRq){
+        Device device = deviceService.updateDevice(deviceDtoRq);
+        return deviceConverter.entityToDto(device);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable Long id){
+        deviceService.deletById(id); //todo validation
+    }
+
 }
