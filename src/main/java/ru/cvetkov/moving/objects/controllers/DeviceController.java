@@ -7,6 +7,7 @@ import ru.cvetkov.moving.objects.dto.DeviceDtoRq;
 import ru.cvetkov.moving.objects.dto.DeviceDtoRs;
 import ru.cvetkov.moving.objects.entities.Device;
 import ru.cvetkov.moving.objects.exeptions.ResourceNotFoundException;
+import ru.cvetkov.moving.objects.services.DeviceService;
 import ru.cvetkov.moving.objects.services.DeviceServiceImpl;
 
 import java.util.List;
@@ -18,7 +19,8 @@ import java.util.stream.Collectors;
 public class DeviceController {
 
     private final DeviceConverter deviceConverter;
-    private final DeviceServiceImpl deviceService;
+
+    private final DeviceService deviceService;
 
 
     @GetMapping("/{id}")
@@ -27,14 +29,20 @@ public class DeviceController {
         return deviceConverter.entityToDto(device);
     }
 
-    @GetMapping("/allDevices")
-    public List<DeviceDtoRs> getAllDevices(){
-        return deviceService.getAllDevices().stream().map(deviceConverter::entityToDto).collect(Collectors.toList());
+//    @GetMapping("/all")
+//    public List<DeviceDtoRs> getAllDevices(){
+//        return deviceService.getAllDevices().stream().map(deviceConverter::entityToDto).collect(Collectors.toList());
+//    }
+
+    @GetMapping("/imei/{imei}")
+    public DeviceDtoRs getDeviceByImei(@PathVariable String imei){
+        Device device= deviceService.getDeviceByImei(imei).orElseThrow(() -> new RuntimeException("Device with imei = " + imei + " not found."));
+        return deviceConverter.entityToDto(device);
     }
 
     @GetMapping("/page")
     public List<Device> getPageDevices(@RequestParam(defaultValue = "1") int firstPage, @RequestParam(defaultValue = "3") int pageSize){
-        return deviceService.getPageAsListDevices(firstPage, pageSize);
+        return deviceService.getPageAsListDevices(firstPage, pageSize); //todo list<page>
     }
 
     @PostMapping()

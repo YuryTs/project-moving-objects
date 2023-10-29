@@ -9,16 +9,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DeviceService {
-    public Optional<Device> getById(Long id);
+    Optional<Device> getById(Long id);
 
-    public List<Device> getAllDevices();
-    public List<Device> getPageAsListDevices(int firstPage, int pageSize);
+    Optional<Device> getDeviceByImei(String imei);
 
-    public Device save(Device device);
+    List<Device> getAllDevices();
 
-    public Device updateDevice(DeviceDtoRq deviceDtoRq);
+    List<Device> getPageAsListDevices(int firstPage, int pageSize);
 
-    public void deletById(Long id);
+    Device save(Device device);
 
-    public Device createNewDevice(DeviceDtoRq deviceDtoRq);
+    Device updateDevice(DeviceDtoRq deviceDtoRq);
+
+    void deletById(Long id);
+
+    Device createNewDevice(DeviceDtoRq deviceDtoRq);
 }

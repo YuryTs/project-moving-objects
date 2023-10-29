@@ -18,30 +18,35 @@ public class DeviceServiceImpl implements DeviceService{
 
     @Override
     public Optional<Device> getById(Long id){
-        return repository.findById(id); //todo validation
+        return repository.findById(id); //todo validation -1
+    }
+
+    @Override
+    public Optional<Device> getDeviceByImei(String imei) {
+        return repository.getDeviceByImei(imei);//todo validation?
     }
 
     @Override
     public List<Device> getAllDevices(){
         return repository.findAll();
-    }
+    } //todo удалить
 
     @Override
-    public List<Device> getPageAsListDevices(int firstPage, int pageSize){
+    public List<Device> getPageAsListDevices(int firstPage, int pageSize){ //todo validation page max pages
         return repository.findAll(PageRequest.of(firstPage - 1, pageSize)).getContent();
     }
 
     @Override
     public Device save(Device device){
         return repository.save(device);
-    }
+    } //todo удалить
 
     @Override
     @Transactional
     public Device updateDevice(DeviceDtoRq deviceDtoRq){
         Device deviceForUpdate = repository.findById(deviceDtoRq.getId()).get(); //todo validation if id==null
-        deviceForUpdate.setDeviceName(deviceDtoRq.getDeviceName());
-        return save(deviceForUpdate);
+        deviceForUpdate.setName(deviceDtoRq.getDeviceName());
+        return repository.save(deviceForUpdate);
     }
 
     @Override
@@ -52,7 +57,7 @@ public class DeviceServiceImpl implements DeviceService{
     @Override
     public Device createNewDevice(DeviceDtoRq deviceDtoRq) {
         Device device = new Device();
-        device.setDeviceName(deviceDtoRq.getDeviceName());
-        return save(device);
+        device.setName(deviceDtoRq.getDeviceName());
+        return repository.save(device);
     }
 }

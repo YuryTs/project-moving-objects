@@ -16,10 +16,21 @@ public class Device {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-    @Column(name = "name")
-    private String deviceName;
 
-    public Device(String deviceName) {
-        this.deviceName = deviceName;
+    @Column(name = "name")
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "device_groups_id")
+    private DeviceGroup deviceGroup;
+
+    @Column(unique = true)
+    String imei;
+
+
+    public Device(String name, String imei, DeviceGroup deviceGroup) {
+        this.name = name;
+        this.imei = imei;
+        this.deviceGroup = deviceGroup;
     }
 }

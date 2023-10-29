@@ -9,7 +9,7 @@ public class DeviceConverter {
     public DeviceDtoRs entityToDto(Device device){
         return new DeviceDtoRs(
                 device.getId(),
-                device.getDeviceName()
+                device.getName()
         );
     }
 }

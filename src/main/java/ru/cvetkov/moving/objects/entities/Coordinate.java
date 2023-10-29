@@ -8,6 +8,7 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class Coordinate {
-    private Double lat;
-    private Double lng;
+    private Double latitude;
+    private Double longitude;
+    private Double altitude;
 }
