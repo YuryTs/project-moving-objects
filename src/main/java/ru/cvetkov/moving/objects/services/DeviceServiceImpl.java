@@ -27,11 +27,6 @@ public class DeviceServiceImpl implements DeviceService{
     }
 
     @Override
-    public List<Device> getAllDevices(){
-        return repository.findAll();
-    } //todo удалить
-
-    @Override
     public List<Device> getPageAsListDevices(int firstPage, int pageSize){ //todo validation page max pages
         return repository.findAll(PageRequest.of(firstPage - 1, pageSize)).getContent();
     }

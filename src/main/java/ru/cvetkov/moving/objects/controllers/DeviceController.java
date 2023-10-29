@@ -29,11 +29,6 @@ public class DeviceController {
         return deviceConverter.entityToDto(device);
     }
 
-//    @GetMapping("/all")
-//    public List<DeviceDtoRs> getAllDevices(){
-//        return deviceService.getAllDevices().stream().map(deviceConverter::entityToDto).collect(Collectors.toList());
-//    }
-
     @GetMapping("/imei/{imei}")
     public DeviceDtoRs getDeviceByImei(@PathVariable String imei){
         Device device= deviceService.getDeviceByImei(imei).orElseThrow(() -> new RuntimeException("Device with imei = " + imei + " not found."));

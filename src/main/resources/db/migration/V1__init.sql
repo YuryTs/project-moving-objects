@@ -28,7 +28,7 @@ values ('gps1', 1, '22www'),
        ('gps6', 2, 'qqq22'),
        ('gps7', 3, 'wweerr22');
 
--- create table track
+-- create table geoposition
 -- (
 --     id         bigserial primary key,
 --     time_track timestamp,

@@ -2,26 +2,26 @@ package ru.cvetkov.moving.objects.entities;
 
 import java.time.LocalDateTime;
 
-public class Track {
+public class Geoposition {
     private LocalDateTime trackDateTime;
     private Double longitude;
     private Double latitude;
     private Double altitude;
     private Double speed;
     private Integer direction;
-    private Long deviceId;
-    public Track() {}
+    private String imei;
+    public Geoposition() {}
 
-    public Track(Track track) {
-        this.trackDateTime  = track.trackDateTime;
-        this.longitude      = track.longitude;
-        this.latitude       = track.latitude;
-        this.altitude       = track.altitude;
-        this.speed          = track.speed;
-        this.direction      = track.direction;
+    public Geoposition(Geoposition geoposition) {
+        this.trackDateTime  = geoposition.trackDateTime;
+        this.longitude      = geoposition.longitude;
+        this.latitude       = geoposition.latitude;
+        this.altitude       = geoposition.altitude;
+        this.speed          = geoposition.speed;
+        this.direction      = geoposition.direction;
     }
 
-    public Track(LocalDateTime trackDateTime, Double lon, Double lat, Double alt, Double sp, Integer dir) {
+    public Geoposition(LocalDateTime trackDateTime, Double lon, Double lat, Double alt, Double sp, Integer dir) {
         this.trackDateTime  = trackDateTime;
         this.longitude      = lon;
         this.latitude       = lat;
@@ -30,14 +30,14 @@ public class Track {
         this.direction      = dir;
     }
 
-    private Track(Builder builder) {
+    private Geoposition(Builder builder) {
         this.trackDateTime = builder.trackDateTime;
         this.longitude = builder.longitude;
         this.latitude = builder.latitude;
         this.speed = builder.speed;
         this.altitude = builder.altitude;
         this.direction = builder.direction;
-        this.deviceId = builder.deviceId;
+        this.imei = builder.imei;
     }
 
     public static class Builder {
@@ -48,21 +48,19 @@ public class Track {
         private Double altitude;
         private Double speed;
         private Integer direction;
-        private Long deviceId;
-        private Long id;
+        private String imei;
 
         public Builder() {
         }
 
-        public Track build() {
-            Track track = new Track(this);
+        public Geoposition build() {
+            Geoposition geoposition = new Geoposition(this);
             clean();
-            return track;
+            return geoposition;
         }
 
         private void clean() {
-            deviceId = null;
-            id = null;
+            imei = null;
             longitude = null;
             latitude = null;
             altitude = null;
@@ -71,13 +69,8 @@ public class Track {
             trackDateTime = null;
         }
 
-        public Builder vehicleId(Long vehicleId) {
-            this.deviceId = vehicleId;
-            return this;
-        }
-
-        public Builder id(Long id) {
-            this.id = id;
+        public Builder vehicleId(String imei) {
+            this.imei = imei;
             return this;
         }
 
@@ -157,12 +150,12 @@ public class Track {
         this.direction = direction;
     }
 
-    public Long getVehicleId() {
-        return deviceId;
+    public String getDeviceImei() {
+        return imei;
     }
 
-    public void setVehicleId(Long vehicleId) {
-        this.deviceId = vehicleId;
+    public void setDeviceImei(String imei) {
+        this.imei = imei;
     }
 
     @Override
@@ -170,15 +163,15 @@ public class Track {
         if (this == o) { return true; }
         if (o == null || getClass() != o.getClass()) { return false; }
 
-        Track track = (Track) o;
+        Geoposition geoposition = (Geoposition) o;
 
-        if (trackDateTime != null ? !trackDateTime.equals(track.trackDateTime) : track.trackDateTime != null) { return false; }
-        if (longitude != null ? !longitude.equals(track.longitude) : track.longitude != null) { return false; }
-        if (latitude != null ? !latitude.equals(track.latitude) : track.latitude != null) { return false; }
-        if (altitude != null ? !altitude.equals(track.altitude) : track.altitude != null) { return false; }
-        if (speed != null ? !speed.equals(track.speed) : track.speed != null) { return false; }
-        if (direction != null ? !direction.equals(track.direction) : track.direction != null) { return false; }
-        return !(deviceId != null ? !deviceId.equals(track.deviceId) : track.deviceId != null);
+        if (trackDateTime != null ? !trackDateTime.equals(geoposition.trackDateTime) : geoposition.trackDateTime != null) { return false; }
+        if (longitude != null ? !longitude.equals(geoposition.longitude) : geoposition.longitude != null) { return false; }
+        if (latitude != null ? !latitude.equals(geoposition.latitude) : geoposition.latitude != null) { return false; }
+        if (altitude != null ? !altitude.equals(geoposition.altitude) : geoposition.altitude != null) { return false; }
+        if (speed != null ? !speed.equals(geoposition.speed) : geoposition.speed != null) { return false; }
+        if (direction != null ? !direction.equals(geoposition.direction) : geoposition.direction != null) { return false; }
+        return !(imei != null ? !imei.equals(geoposition.imei) : geoposition.imei != null);
 
     }
 
@@ -190,7 +183,7 @@ public class Track {
         result = 31 * result + (altitude != null ? altitude.hashCode() : 0);
         result = 31 * result + (speed != null ? speed.hashCode() : 0);
         result = 31 * result + (direction != null ? direction.hashCode() : 0);
-        result = 31 * result + (deviceId != null ? deviceId.hashCode() : 0);
+        result = 31 * result + (imei != null ? imei.hashCode() : 0);
         return result;
     }
 

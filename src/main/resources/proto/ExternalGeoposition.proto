@@ -1,0 +1,25 @@
+syntax = "proto3";
+option java_multiple_files = true;
+
+package main.proto;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+
+message ExternalGeoposition {
+
+  google.protobuf.Timestamp trackTime = 1;
+  double longitude = 2;
+  double latitude = 3;
+  double altitude = 4;
+  double speed = 5;
+  double direction = 6;
+  string imei = 7;
+}
+
+
+
+service ExternalGeopositionService {
+  rpc putExternalGeoposition(ExternalGeoposition) returns (google.protobuf.Empty);
+}

@@ -13,8 +13,6 @@ public interface DeviceService {
 
     Optional<Device> getDeviceByImei(String imei);
 
-    List<Device> getAllDevices();
-
     List<Device> getPageAsListDevices(int firstPage, int pageSize);
 
     Device save(Device device);
