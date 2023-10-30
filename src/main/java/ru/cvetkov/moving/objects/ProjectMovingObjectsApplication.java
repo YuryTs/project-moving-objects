@@ -1,5 +1,6 @@
 package ru.cvetkov.moving.objects;
 
+import io.grpc.Grpc;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

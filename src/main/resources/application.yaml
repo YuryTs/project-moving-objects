@@ -23,4 +23,8 @@ logging:
   config:
     classpath: logback.xml
 
+grpc:
+  server:
+    port: 9090
+
 
