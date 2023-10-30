@@ -1,9 +1,9 @@
 package ru.cvetkov.moving.objects.entities;
 
-import java.time.LocalDateTime;
+import org.joda.time.DateTime;
 
 public class Geoposition {
-    private LocalDateTime trackDateTime;
+    private DateTime geopositionDateTime;
     private Double longitude;
     private Double latitude;
     private Double altitude;
@@ -12,26 +12,8 @@ public class Geoposition {
     private String imei;
     public Geoposition() {}
 
-    public Geoposition(Geoposition geoposition) {
-        this.trackDateTime  = geoposition.trackDateTime;
-        this.longitude      = geoposition.longitude;
-        this.latitude       = geoposition.latitude;
-        this.altitude       = geoposition.altitude;
-        this.speed          = geoposition.speed;
-        this.direction      = geoposition.direction;
-    }
-
-    public Geoposition(LocalDateTime trackDateTime, Double lon, Double lat, Double alt, Double sp, Integer dir) {
-        this.trackDateTime  = trackDateTime;
-        this.longitude      = lon;
-        this.latitude       = lat;
-        this.altitude       = alt;
-        this.speed          = sp;
-        this.direction      = dir;
-    }
-
     private Geoposition(Builder builder) {
-        this.trackDateTime = builder.trackDateTime;
+        this.geopositionDateTime = builder.geopositionDateTime;
         this.longitude = builder.longitude;
         this.latitude = builder.latitude;
         this.speed = builder.speed;
@@ -42,7 +24,7 @@ public class Geoposition {
 
     public static class Builder {
 
-        private LocalDateTime trackDateTime;
+        private DateTime geopositionDateTime;
         private Double longitude;
         private Double latitude;
         private Double altitude;
@@ -66,10 +48,11 @@ public class Geoposition {
             altitude = null;
             speed = null;
             direction = null;
-            trackDateTime = null;
+            geopositionDateTime = null;
         }
 
-        public Builder vehicleId(String imei) {
+
+        public Builder imei(String imei) {
             this.imei = imei;
             return this;
         }
@@ -99,15 +82,15 @@ public class Geoposition {
             return this;
         }
 
-        public Builder trackDateTime(LocalDateTime trackDateTime) {
-            this.trackDateTime = trackDateTime;
+        public Builder geopositionDateTime(DateTime geopositionDateTime) {
+            this.geopositionDateTime = geopositionDateTime;
             return this;
         }
 
     }
 
-    public LocalDateTime getTrackDateTime() {
-        return trackDateTime;
+    public DateTime getGeopositionDateTime() {
+        return geopositionDateTime;
     }
 
     public Double getLongitude() {
@@ -150,11 +133,11 @@ public class Geoposition {
         this.direction = direction;
     }
 
-    public String getDeviceImei() {
+    public String getImei() {
         return imei;
     }
 
-    public void setDeviceImei(String imei) {
+    public void setImei(String imei) {
         this.imei = imei;
     }
 
@@ -165,7 +148,7 @@ public class Geoposition {
 
         Geoposition geoposition = (Geoposition) o;
 
-        if (trackDateTime != null ? !trackDateTime.equals(geoposition.trackDateTime) : geoposition.trackDateTime != null) { return false; }
+        if (geopositionDateTime != null ? !geopositionDateTime.equals(geoposition.geopositionDateTime) : geoposition.geopositionDateTime != null) { return false; }
         if (longitude != null ? !longitude.equals(geoposition.longitude) : geoposition.longitude != null) { return false; }
         if (latitude != null ? !latitude.equals(geoposition.latitude) : geoposition.latitude != null) { return false; }
         if (altitude != null ? !altitude.equals(geoposition.altitude) : geoposition.altitude != null) { return false; }
@@ -177,7 +160,7 @@ public class Geoposition {
 
     @Override
     public int hashCode() {
-        int result = trackDateTime != null ? trackDateTime.hashCode() : 0;
+        int result = geopositionDateTime != null ? geopositionDateTime.hashCode() : 0;
         result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
         result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
         result = 31 * result + (altitude != null ? altitude.hashCode() : 0);
@@ -189,10 +172,11 @@ public class Geoposition {
 
     @Override
     public String toString() {
-        return "Track{" +
-                "trackDateTime=" + trackDateTime +
+        return "Geoposition{" +
+                "geopositionDateTime=" + geopositionDateTime +
                 ", longitude=" + longitude +
                 ", latitude=" + latitude +
+                ", imei='" + imei + '\'' +
                 '}';
     }
 }

@@ -12,6 +12,17 @@ create table devices
     device_groups_id bigserial references device_groups (id)
 );
 
+create table geopositions
+(
+    geoposotion_data_time timestamp with time zone default current_timestamp,
+    lon                   double precision,
+    lat                   double precision,
+    alt                   double precision,
+    speed                 double precision,
+    direction             integer,
+    imei                  varchar(255)
+);
+
 insert into device_groups (name)
 values ('group1'),
        ('group2'),
