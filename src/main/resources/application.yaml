@@ -14,6 +14,9 @@ spring:
     properties:
       hibernate:
         dialecr: org.hibernate.dialect.H2Dialect
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
   h2:
     console:
       enabled: true
@@ -22,6 +25,7 @@ spring:
 logging:
   config:
     classpath: logback.xml
+    org.hibernate: DEBUG
 
 grpc:
   server:

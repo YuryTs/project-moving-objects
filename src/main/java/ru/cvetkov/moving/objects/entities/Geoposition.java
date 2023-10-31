@@ -1,15 +1,46 @@
 package ru.cvetkov.moving.objects.entities;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.joda.time.DateTime;
 
+import javax.persistence.*;
+import java.sql.Timestamp;
+
+@Entity
+@Table(name = "geopositions")
 public class Geoposition {
-    private DateTime geopositionDateTime;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Getter
+    @Column(name = "geoposition_data_time")
+    private Timestamp geopositionDateTime;
+    @Setter
+    @Getter
+    @Column(name = "lon")
     private Double longitude;
+    @Setter
+    @Getter
+    @Column(name = "lat")
     private Double latitude;
+    @Setter
+    @Getter
+    @Column(name = "alt")
     private Double altitude;
+    @Setter
+    @Getter
+    @Column(name = "speed")
     private Double speed;
-    private Integer direction;
-    private String imei;
+    @Setter
+    @Getter
+    @Column(name = "direction")
+    private Double direction;
+//    @Column(name = "device_id")
+//    private long deviceId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "device_id")
+    private Device device;
     public Geoposition() {}
 
     private Geoposition(Builder builder) {
@@ -19,18 +50,20 @@ public class Geoposition {
         this.speed = builder.speed;
         this.altitude = builder.altitude;
         this.direction = builder.direction;
-        this.imei = builder.imei;
+//        this.deviceId = builder.deviceId;
+        this.device = builder.device;
     }
 
     public static class Builder {
 
-        private DateTime geopositionDateTime;
+        private Timestamp geopositionDateTime;
         private Double longitude;
         private Double latitude;
         private Double altitude;
         private Double speed;
-        private Integer direction;
-        private String imei;
+        private Double direction;
+//        private long deviceId;
+        private Device device;
 
         public Builder() {
         }
@@ -42,7 +75,7 @@ public class Geoposition {
         }
 
         private void clean() {
-            imei = null;
+//            deviceId = Long.parseLong(null);
             longitude = null;
             latitude = null;
             altitude = null;
@@ -51,11 +84,16 @@ public class Geoposition {
             geopositionDateTime = null;
         }
 
-
-        public Builder imei(String imei) {
-            this.imei = imei;
+        public Builder device(Device device) {
+            this.device = device;
             return this;
         }
+
+
+//        public Builder device(long deviceId) {
+//            this.deviceId = deviceId;
+//            return this;
+//        }
 
         public Builder longitude(Double longitude) {
             this.longitude = longitude;
@@ -77,69 +115,26 @@ public class Geoposition {
             return this;
         }
 
-        public Builder direction(Integer direction) {
+        public Builder direction(Double direction) {
             this.direction = direction;
             return this;
         }
 
-        public Builder geopositionDateTime(DateTime geopositionDateTime) {
+        public Builder geopositionDateTime(Timestamp geopositionDateTime) {
             this.geopositionDateTime = geopositionDateTime;
             return this;
         }
 
+
     }
 
-    public DateTime getGeopositionDateTime() {
-        return geopositionDateTime;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getAltitude() {
-        return altitude;
-    }
-
-    public void setAltitude(Double altitude) {
-        this.altitude = altitude;
-    }
-
-    public Double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(Double speed) {
-        this.speed = speed;
-    }
-
-    public Integer getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Integer direction) {
-        this.direction = direction;
-    }
-
-    public String getImei() {
-        return imei;
-    }
-
-    public void setImei(String imei) {
-        this.imei = imei;
-    }
+    //    public long getDeviceId() {
+//        return deviceId;
+//    }
+//
+//    public void setDeviceId(long deviceId) {
+//        this.deviceId = deviceId;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -154,7 +149,8 @@ public class Geoposition {
         if (altitude != null ? !altitude.equals(geoposition.altitude) : geoposition.altitude != null) { return false; }
         if (speed != null ? !speed.equals(geoposition.speed) : geoposition.speed != null) { return false; }
         if (direction != null ? !direction.equals(geoposition.direction) : geoposition.direction != null) { return false; }
-        return !(imei != null ? !imei.equals(geoposition.imei) : geoposition.imei != null);
+        return !(true);
+//        return !(deviceId != null ? !deviceId.equals(geoposition.deviceId) : geoposition.deviceId != null);
 
     }
 
@@ -166,17 +162,21 @@ public class Geoposition {
         result = 31 * result + (altitude != null ? altitude.hashCode() : 0);
         result = 31 * result + (speed != null ? speed.hashCode() : 0);
         result = 31 * result + (direction != null ? direction.hashCode() : 0);
-        result = 31 * result + (imei != null ? imei.hashCode() : 0);
+//        result = 31 * result + (deviceId != null ? deviceId.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Geoposition{" +
-                "geopositionDateTime=" + geopositionDateTime +
+                "id=" + id +
+                ", geopositionDateTime=" + geopositionDateTime +
                 ", longitude=" + longitude +
                 ", latitude=" + latitude +
-                ", imei='" + imei + '\'' +
+                ", altitude=" + altitude +
+                ", speed=" + speed +
+                ", direction=" + direction +
+                ", device" + device +
                 '}';
     }
 }

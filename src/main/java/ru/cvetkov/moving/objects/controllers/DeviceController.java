@@ -6,11 +6,14 @@ import ru.cvetkov.moving.objects.converters.DeviceConverter;
 import ru.cvetkov.moving.objects.dto.DeviceDtoRq;
 import ru.cvetkov.moving.objects.dto.DeviceDtoRs;
 import ru.cvetkov.moving.objects.entities.Device;
+import ru.cvetkov.moving.objects.entities.Geoposition;
 import ru.cvetkov.moving.objects.exeptions.ResourceNotFoundException;
+import ru.cvetkov.moving.objects.services.DeviceGroupService;
 import ru.cvetkov.moving.objects.services.DeviceService;
 import ru.cvetkov.moving.objects.services.DeviceServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -21,6 +24,7 @@ public class DeviceController {
     private final DeviceConverter deviceConverter;
 
     private final DeviceService deviceService;
+
 
 
     @GetMapping("/{id}")
@@ -55,6 +59,11 @@ public class DeviceController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id){
         deviceService.deletById(id); //todo validation
+    }
+
+    @GetMapping("/geo/{id}")
+    public Optional<Geoposition> getLastGeopositionByDeviceId(@PathVariable Long id){
+        return deviceService.getLastGeoposition(id); //todo создать дто и обработать правильно исключение
     }
 
 }

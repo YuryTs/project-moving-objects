@@ -1,7 +1,7 @@
 create table device_groups
 (
     id   bigserial primary key,
-    name varchar(255)
+    name varchar(255) unique
 );
 
 create table devices
@@ -9,19 +9,23 @@ create table devices
     id               bigserial primary key,
     name             varchar(255),
     imei             varchar(255) unique not null,
-    device_groups_id bigserial references device_groups (id)
+    device_groups_id bigint references device_groups (id)
+--     geopositions_id bigint references geopositions (id)
 );
-
 create table geopositions
 (
-    geoposotion_data_time timestamp with time zone default current_timestamp,
+    id                    bigserial PRIMARY KEY,
+    geoposition_data_time timestamp without time zone,
     lon                   double precision,
     lat                   double precision,
     alt                   double precision,
     speed                 double precision,
-    direction             integer,
-    imei                  varchar(255)
+    direction             double precision,
+--     device_id             bigserial,
+    device_id            bigint references devices (id)
 );
+
+
 
 insert into device_groups (name)
 values ('group1'),
@@ -39,15 +43,6 @@ values ('gps1', 1, '22www'),
        ('gps6', 2, 'qqq22'),
        ('gps7', 3, 'wweerr22');
 
--- create table geoposition
--- (
---     id         bigserial primary key,
---     time_track timestamp,
---     lon DOUBLE,
---     lat DOUBLE,
---     alt DOUBLE,
---     speed DOUBLE,
---     direction  NUMERIC
--- )
+
 
 

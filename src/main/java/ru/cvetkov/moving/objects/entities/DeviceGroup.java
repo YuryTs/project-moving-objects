@@ -26,5 +26,4 @@ public class DeviceGroup {
     @JoinColumn(name = "device_groups_id")
     private List<Device> deviceList = new ArrayList<>();
 
-
 }

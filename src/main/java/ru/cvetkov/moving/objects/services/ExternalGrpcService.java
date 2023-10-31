@@ -15,9 +15,10 @@ import ru.cvetkov.moving.objects.entities.Device;
 import ru.cvetkov.moving.objects.entities.Geoposition;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static ru.cvetkov.moving.objects.converters.GoogleTimestampYodaTimeConverter.convertToJodaTime;
+import static ru.cvetkov.moving.objects.converters.TimestampYodaTimeConverter.convertToSqlTimestamp;
 
 @Service
 public class ExternalGrpcService extends ExternalGeopositionServiceGrpc.ExternalGeopositionServiceImplBase {
@@ -53,13 +54,14 @@ public class ExternalGrpcService extends ExternalGeopositionServiceGrpc.External
         try {
             Optional<Device> optionalDevice = deviceService.getDeviceByImei(imei);
 
-            if (!optionalDevice.isPresent()) {
+            if (optionalDevice.isEmpty()) {
                 responseObserver.onError(Status.NOT_FOUND.withDescription("Not found Device for imei = " + imei).asRuntimeException());
+            return;
             }
 
             Timestamp externalGeoDateTime = request.getExternalGeopositionDateTime();
-            DateTime geopositionDateTime = StringUtils.isEmpty(externalGeoDateTime.toString()) ? DateTime.now() : convertToJodaTime(externalGeoDateTime);
-
+            java.sql.Timestamp geopositionDateTime = StringUtils.isEmpty(externalGeoDateTime.toString()) ? java.sql.Timestamp.valueOf(LocalDateTime.now()) : convertToSqlTimestamp(externalGeoDateTime);
+            LOG.info("externalGeoDateTime = {}", externalGeoDateTime);
             Geoposition geoposition = new Geoposition.Builder()
                     .geopositionDateTime(geopositionDateTime)
                     .longitude(request.getLongitude())
@@ -67,9 +69,14 @@ public class ExternalGrpcService extends ExternalGeopositionServiceGrpc.External
                     .altitude(request.getAltitude())
                     .speed(request.getSpeed())
                     .direction(request.getDirection())
-                    .imei(request.getImei())
+                    .device(optionalDevice.get())
                     .build();
-
+            LOG.info("geoposition = {}", geoposition); //todo delete before finish
+            geopositionService.saveGeoposition(geoposition);
+            Empty response = Empty.getDefaultInstance();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+            LOG.info("Geoposition for deviceId = {} has saved successfully", optionalDevice.get().getId());
 
         } catch (Exception e) {
             LOG.error("Error during putExternalGeoposition for imei = {}", imei);

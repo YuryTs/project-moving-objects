@@ -14,7 +14,7 @@ message ExternalGeoposition {
   double latitude = 3;
   double altitude = 4;
   double speed = 5;
-  int32 direction = 6;
+  double direction = 6;
   string imei = 7;
 }
 

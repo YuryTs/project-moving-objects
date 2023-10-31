@@ -20,6 +20,7 @@ public class GrpcServerConfig {
 
     @Autowired
     private GeopositionServiceImpl geopositionService;
+    
 
     @Value("${grpc.server.port}")
     private int grpcServerPort;
