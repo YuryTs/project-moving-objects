@@ -13,4 +13,6 @@ public class DeviceDtoRq {
 
     private String deviceName;
 
+    private String deviceGroupName;
+
 }

@@ -1,13 +1,14 @@
 package ru.cvetkov.moving.objects.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cvetkov.moving.objects.dto.DeviceDtoRq;
 import ru.cvetkov.moving.objects.entities.Device;
 import ru.cvetkov.moving.objects.entities.Geoposition;
-import ru.cvetkov.moving.objects.exeptions.ResourceNotFoundException;
 import ru.cvetkov.moving.objects.repositories.DeviceGroupRepository;
 import ru.cvetkov.moving.objects.repositories.DeviceRepository;
 
@@ -23,44 +24,48 @@ public class DeviceServiceImpl implements DeviceService{
     private final DeviceGroupRepository deviceGroupRepository;
     private final GeopositionService geopositionService;
 
+    @Value("${spring.max.page_size:5}")
+    private Integer MAX_PAGE_SIZE;
     @Override
     public Optional<Device> getById(Long id){
-        return repository.findById(id); //todo validation -1
+        return repository.findById(id);
     }
 
     @Override
     public Optional<Device> getDeviceByImei(String imei) {
-        return repository.getDeviceByImei(imei);//todo validation?
+        return repository.getDeviceByImei(imei);
     }
 
     @Override
-    public List<Device> getPageAsListDevices(int firstPage, int pageSize){ //todo validation page max pages
-        return repository.findAll(PageRequest.of(firstPage - 1, pageSize)).getContent();
+    public List<Device> getPageAsListDevices(int firstPage, int pageSize){
+        if (firstPage < 0){
+            firstPage = 0;
+        }
+        if (pageSize > MAX_PAGE_SIZE){
+            pageSize = MAX_PAGE_SIZE;
+        }
+        return repository.findAll(PageRequest.of(firstPage, pageSize)).getContent();
     }
-
-//    @Override
-//    public Device save(Device device){
-//        String imei = device.getImei();
-//        if (imei.isEmpty() || repository.getDeviceByImei(imei).isPresent()) {
-//            throw new ResourceNotFoundException("You can`t save device with imei = " + imei);
-//        }
-//        if (device.getDeviceGroup() == null){ //todo delete
-//            device.setDeviceGroup(DEFOULT_DEVICE_GROUP);
-//        }
-//        return repository.save(device);
-//    } //todo удалить
 
     @Override
     @Transactional
     public Device updateDevice(DeviceDtoRq deviceDtoRq){
-        Device deviceForUpdate = repository.findById(deviceDtoRq.getId()).get(); //todo validation if id==null
-        deviceForUpdate.setName(deviceDtoRq.getDeviceName());//todo засетить все поля
+        Device deviceForUpdate = repository.findById(deviceDtoRq.getId()).get();
+        deviceForUpdate.setName(deviceDtoRq.getDeviceName()); //todo нужно ли иметь возможность менять отсюда группу в которую входит устройство
         return repository.save(deviceForUpdate);
     }
 
     @Override
-    public void deletById(Long id) {
+    @Transactional
+    public boolean deletById(Long id) {
+        boolean deleted = false;
+        Optional<Device> optionalDevice = repository.findById(id);
+        if (optionalDevice.isEmpty()){
+           return deleted;
+        }
         repository.deleteById(id);
+        deleted = true;
+        return deleted;
     }
 
     @Override
@@ -76,6 +81,5 @@ public class DeviceServiceImpl implements DeviceService{
     public List<Geoposition> getGeopositionsByDeviceIdAndDateInterval(Long deviceId, Timestamp startDate, Timestamp endDate) {
         return geopositionService.getGeopositionsByDeviceIdAndDateInterval(deviceId, startDate, endDate);
     }
-
 
 }

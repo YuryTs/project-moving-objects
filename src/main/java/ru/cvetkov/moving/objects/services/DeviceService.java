@@ -19,7 +19,7 @@ public interface DeviceService {
 
     Device updateDevice(DeviceDtoRq deviceDtoRq);
 
-    void deletById(Long id);
+    boolean deletById(Long id);
 
     Device createNewDevice(DeviceDtoRq deviceDtoRq);
 

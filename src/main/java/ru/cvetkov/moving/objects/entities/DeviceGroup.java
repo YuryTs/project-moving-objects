@@ -1,5 +1,6 @@
 package ru.cvetkov.moving.objects.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,8 +23,9 @@ public class DeviceGroup {
     @Column(name = "name", nullable = true, unique = true)
     private String deviceGroupName;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "device_groups_id")
-    private List<Device> deviceList = new ArrayList<>();
+    @JsonManagedReference
+    private List<Device> deviceList;
 
 }

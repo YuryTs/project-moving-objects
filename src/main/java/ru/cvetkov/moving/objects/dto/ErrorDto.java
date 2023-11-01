@@ -2,6 +2,7 @@ package ru.cvetkov.moving.objects.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,7 @@ public class ErrorDto {
     private String code;
     private String message;
     private LocalDateTime date;
+
 
     public ErrorDto(String code, String message) {
         this.code = code;

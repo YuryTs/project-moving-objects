@@ -1,5 +1,6 @@
 package ru.cvetkov.moving.objects.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,9 +24,10 @@ public class Device {
 
     @ManyToOne
     @JoinColumn(name = "device_groups_id")
+    @JsonBackReference
     private DeviceGroup deviceGroup;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id")
     private List<Geoposition> geopositions;
 

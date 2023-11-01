@@ -13,17 +13,15 @@ import ru.cvetkov.moving.objects.entities.DeviceGroup;
 import ru.cvetkov.moving.objects.services.DeviceGroupService;
 
 @RestController
-@RequiredArgsConstructor
 @AllArgsConstructor
 @RequestMapping("/group")
 public class DeviceGroupController {
 
     DeviceGroupService deviceGroupService;
-
     DeviceGroupConverter deviceGroupConverter;
 
     @PostMapping
-    public DeviceGroupDtoRs createDeviceGroup(@RequestBody DeviceGroupDtoRq deviceGroupRq){
+    public DeviceGroupDtoRs createDeviceGroup(@RequestBody DeviceGroupDtoRq deviceGroupRq){ //todo validation
         DeviceGroup deviceGroup = deviceGroupService.createNewDeviceGroup(deviceGroupRq);
         return deviceGroupConverter.entityToDto(deviceGroup);
     }
