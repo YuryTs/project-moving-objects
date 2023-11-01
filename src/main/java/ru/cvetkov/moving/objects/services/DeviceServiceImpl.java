@@ -73,7 +73,9 @@ public class DeviceServiceImpl implements DeviceService{
     }
 
     @Override
-    public Optional<Geoposition> getLastGeoposition(Long deviceId){
-        return geopositionService.getLastGeoposition(deviceId);
+    public List<Geoposition> getGeopositionsByDeviceIdAndDateInterval(Long deviceId, Timestamp startDate, Timestamp endDate) {
+        return geopositionService.getGeopositionsByDeviceIdAndDateInterval(deviceId, startDate, endDate);
     }
+
+
 }

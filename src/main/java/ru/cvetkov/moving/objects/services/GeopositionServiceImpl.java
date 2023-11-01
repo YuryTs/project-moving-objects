@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.cvetkov.moving.objects.entities.Geoposition;
 import ru.cvetkov.moving.objects.repositories.GeopositionRepository;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,11 +20,11 @@ public class GeopositionServiceImpl implements GeopositionService{
     }
 
     @Override
-    public Optional<Geoposition> getLastGeoposition(Long deviceId) {
-//        return geopositionRepository.findById(deviceId);
-        return geopositionRepository.findLastGeopositionByDevice_Id(deviceId);
-//        return geopositionRepository.findFirstByDevice_IdOrderByGeopositionDateTimeGeopositionDateTimeDesc(deviceId);
+    public List<Geoposition> getGeopositionsByDeviceIdAndDateInterval(Long deviceId, Timestamp startDate, Timestamp endDate) {
+        return geopositionRepository.getGeopositionsByDeviceIdAndDateInterval(deviceId, startDate, endDate);
     }
+
+
 }
 
 

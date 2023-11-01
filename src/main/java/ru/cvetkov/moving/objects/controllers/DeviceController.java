@@ -12,6 +12,7 @@ import ru.cvetkov.moving.objects.services.DeviceGroupService;
 import ru.cvetkov.moving.objects.services.DeviceService;
 import ru.cvetkov.moving.objects.services.DeviceServiceImpl;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class DeviceController {
 
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/device/{id}")
     public DeviceDtoRs getDevice(@PathVariable Long id){
         Device device = deviceService.getById(id).orElseThrow(() -> new ResourceNotFoundException("Device with id = " + id + " not found."));
         return deviceConverter.entityToDto(device);
@@ -61,9 +62,12 @@ public class DeviceController {
         deviceService.deletById(id); //todo validation
     }
 
-    @GetMapping("/geo/{id}")
-    public Optional<Geoposition> getLastGeopositionByDeviceId(@PathVariable Long id){
-        return deviceService.getLastGeoposition(id); //todo создать дто и обработать правильно исключение
+    // ___Date as 2023-08-15 08:06:21
+    @GetMapping("/geopositions")
+    public List<Geoposition> getGeopositionsForDevice(
+            @RequestParam Long deviceId,
+            @RequestParam Timestamp startDate,
+            @RequestParam Timestamp endDate) {
+        return deviceService.getGeopositionsByDeviceIdAndDateInterval(deviceId, startDate, endDate);
     }
-
 }

@@ -6,6 +6,7 @@ import ru.cvetkov.moving.objects.dto.DeviceDtoRq;
 import ru.cvetkov.moving.objects.entities.Device;
 import ru.cvetkov.moving.objects.entities.Geoposition;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,5 +23,5 @@ public interface DeviceService {
 
     Device createNewDevice(DeviceDtoRq deviceDtoRq);
 
-    Optional<Geoposition> getLastGeoposition(Long deviceId);
+    List<Geoposition> getGeopositionsByDeviceIdAndDateInterval(Long deviceId, Timestamp startDate, Timestamp endDate);
 }
