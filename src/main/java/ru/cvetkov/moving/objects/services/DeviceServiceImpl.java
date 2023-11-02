@@ -20,8 +20,7 @@ import java.sql.Timestamp;
 public class DeviceServiceImpl implements DeviceService{
     private final Integer DEFOULT_DEVICE_GROUP = 1;
     private final DeviceRepository repository;
-    private final DeviceGroupService deviceGroupService;
-    private final DeviceGroupRepository deviceGroupRepository;
+//    private final DeviceGroupService deviceGroupService;
     private final GeopositionService geopositionService;
 
     @Value("${spring.max.page_size:5}")
@@ -73,7 +72,7 @@ public class DeviceServiceImpl implements DeviceService{
         Device device = new Device();
         device.setName(deviceDtoRq.getDeviceName());
 //        device.setImei(deviceDtoRq.IMei);
-        device.setDeviceGroup(deviceGroupRepository.getReferenceById(deviceDtoRq.getId()));
+//        device.setDeviceGroup(deviceGroupService.getDeviceGroupBuId(deviceDtoRq.getId()));
         return repository.save(device);
     }
 
