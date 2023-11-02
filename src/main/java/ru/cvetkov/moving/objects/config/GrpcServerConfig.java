@@ -2,6 +2,8 @@ package ru.cvetkov.moving.objects.config;
 
 import io.grpc.Server;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +15,8 @@ import ru.cvetkov.moving.objects.services.GeopositionServiceImpl;
 import java.io.IOException;
 
 @Configuration
+@AllArgsConstructor
+@NoArgsConstructor
 public class GrpcServerConfig {
 
     @Autowired
