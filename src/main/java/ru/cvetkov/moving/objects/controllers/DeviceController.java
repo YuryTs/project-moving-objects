@@ -9,13 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.cvetkov.moving.objects.converters.DeviceConverter;
 import ru.cvetkov.moving.objects.converters.GeopositionConverter;
-import ru.cvetkov.moving.objects.dto.DeviceDtoRq;
-import ru.cvetkov.moving.objects.dto.DeviceDtoRs;
-import ru.cvetkov.moving.objects.dto.ErrorDto;
-import ru.cvetkov.moving.objects.dto.GeopositionDto;
+import ru.cvetkov.moving.objects.dto.*;
 import ru.cvetkov.moving.objects.entities.Device;
 import ru.cvetkov.moving.objects.entities.Geoposition;
 import ru.cvetkov.moving.objects.exeptions.ResourceNotFoundException;
+import ru.cvetkov.moving.objects.exeptions.ValidationException;
 import ru.cvetkov.moving.objects.services.DeviceService;
 
 import java.lang.invoke.MethodHandles;
@@ -34,64 +32,59 @@ public class DeviceController {
     private final GeopositionConverter geopositionConverter;
 
 
-
-    @GetMapping("/device/{id}")
+    @GetMapping("/byid/{id}")
     public DeviceDtoRs getDevice(@PathVariable Long id) {
         Device device = deviceService.getById(id).orElseThrow(() -> new ResourceNotFoundException("Device with id = " + id + " not found."));
         return deviceConverter.entityToDto(device);
     }
 
-    @GetMapping("/imei/{imei}")
+    @GetMapping("/byimei/{imei}")
     public DeviceDtoRs getDeviceByImei(@PathVariable String imei) {
         Device device = deviceService.getDeviceByImei(imei).orElseThrow(() -> new ResourceNotFoundException("Device with imei = " + imei + " not found."));
         return deviceConverter.entityToDto(device);
     }
 
-    @GetMapping("/page")
+    @GetMapping("/list")
     public List<DeviceDtoRs> getPageDevices(@RequestParam(defaultValue = "1") int firstPage, @RequestParam(defaultValue = "3") int pageSize) {
         List<Device> devices = deviceService.getPageAsListDevices(firstPage, pageSize);
         return devices.stream().map(deviceConverter::entityToDto).collect(Collectors.toList());
     }
 
-    @PostMapping()
+    @PostMapping("/new")
     public DeviceDtoRs createDevice(@RequestBody DeviceDtoRq deviceDtoRq) {
         Device device = deviceService.createNewDevice(deviceDtoRq);
         return deviceConverter.entityToDto(device);
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateDevice(@RequestBody DeviceDtoRq deviceDtoRq) {
-        if (
-                deviceDtoRq == null
-                        || deviceDtoRq.getId() <= 0
-                        || deviceDtoRq.getId() >= Long.MAX_VALUE
-                        || StringUtils.isEmpty(deviceDtoRq.getDeviceName())
-        ) {
+    @PutMapping("/update")
+    public ResponseEntity<DeviceDtoRs> updateDevice(@RequestBody DeviceDtoRq deviceDtoRq) {
+        if (deviceDtoRq == null || deviceDtoRq.getId() <= 0 || StringUtils.isEmpty(deviceDtoRq.getDeviceName())) {
             LOG.info("request for updateDevice has INVALID_PARAMS");
-            return new ResponseEntity<>(new ErrorDto("INVALID_PARAM", "You should check request`s parameters"), HttpStatus.BAD_REQUEST);
+            throw  new ValidationException(new ErrorDto("INVALID_PARAM", "You should check request`s parameters"));
         }
         Device device = deviceService.updateDevice(deviceDtoRq);
         return new ResponseEntity<>(deviceConverter.entityToDto(device), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Long id) {
-        if ( id <= 0 || id >= Long.MAX_VALUE) {
+    @DeleteMapping("/byid/{id}")
+    public ResponseEntity<MessageAnswerDto> deleteById(@PathVariable Long id) {
+        if (id <= 0) {
             LOG.info("request for updateDevice has INVALID_PARAMS");
-            return new ResponseEntity<>(new ErrorDto("INVALID_PARAM", "You should check request`s parameters"), HttpStatus.BAD_REQUEST);
+            throw  new ValidationException(new ErrorDto("INVALID_PARAM", "You should check request`s parameters"));
         }
-        if (deviceService.deletById(id)) {
-            return new ResponseEntity<>("Device with id = " + id + " deleted.", HttpStatus.OK);
+        if (!deviceService.deletById(id)) {
+            throw  new ResourceNotFoundException("Device with id = " + id + " not found.");
         }
-        return new ResponseEntity<>(new ErrorDto("NOT_FOUND", "Device with id = " + id + " not found"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new MessageAnswerDto("Device with id = " + id + " deleted."), HttpStatus.OK);
     }
 
     // Request with __Date as 2023-08-15 08:06:21
     @GetMapping("/geopositions")
-    public List<GeopositionDto> getGeopositionsForDevice( //todo validation?
+    public List<GeopositionDto> getGeopositionsForDevice(
             @RequestParam Long deviceId,
             @RequestParam Timestamp startDate,
-            @RequestParam Timestamp endDate) {
+            @RequestParam Timestamp endDate
+    ) {
         List<Geoposition> geopositions = deviceService.getGeopositionsByDeviceIdAndDateInterval(deviceId, startDate, endDate);
         return geopositions.stream().map(geopositionConverter::entityToDo).collect(Collectors.toList());
     }

@@ -11,6 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class DeviceGroupDtoRq {
+    private Long id;
+
     private String deviceGroupName;
-    private List<Device> deviceList;
+
+    private List<Long> deviceIds;
 }

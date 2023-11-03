@@ -4,14 +4,15 @@ import ru.cvetkov.moving.objects.dto.DeviceGroupDtoRq;
 import ru.cvetkov.moving.objects.entities.DeviceGroup;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface DeviceGroupService {
     DeviceGroup createNewDeviceGroup(DeviceGroupDtoRq deviceGroupRq);
 
-    List<String> delDevicesToDeviceGroup(String name, List<Long> deviceIds);
+    boolean deleteDeviceGroupById(Long deviceGroupId);
 
-    List<String> findDevcesByGroupName(String name);
+    DeviceGroup findDevcesByGroupName(String name);
 
-    List<String> putDevicesToDeviceGroup(String name, List<Long> deviceIds);
+    List<DeviceGroup> getPageAsListDevices(int firstPage, int pageSize);
+
+    DeviceGroup updateDeviceGroupByIdGroup(DeviceGroupDtoRq deviceGroupDtoRq);
 }

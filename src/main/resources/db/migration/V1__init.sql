@@ -10,7 +10,6 @@ create table devices
     name             varchar(255),
     imei             varchar(255) unique not null,
     device_groups_id bigint references device_groups (id)
---     geopositions_id bigint references geopositions (id)
 );
 create table geopositions
 (

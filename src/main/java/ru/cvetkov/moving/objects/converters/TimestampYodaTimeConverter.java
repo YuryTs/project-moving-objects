@@ -16,7 +16,7 @@ public class TimestampYodaTimeConverter {
         // Создаем объект DateTime с использованием полученного значения и UTC
         return new java.sql.Timestamp(milliseconds);
     }
-
+//
 //    public static Timestamp convertToProtoTimestamp(java.sql.Timestamp dateTime) {
 //        // Получаем количество миллисекунд с 1970-01-01T00:00:00Z
 //        long milliseconds = jodaDateTime.getMillis();

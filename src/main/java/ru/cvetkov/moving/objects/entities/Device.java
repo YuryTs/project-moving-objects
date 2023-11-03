@@ -24,9 +24,11 @@ public class Device {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "device_groups_id")
-    @JsonBackReference
+    @JoinColumn(name = "device_groups_id", insertable = false, updatable = false)
     private DeviceGroup deviceGroup;
+
+    @Column(name = "device_group_id")
+    private Long deviceGroupId;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id")
