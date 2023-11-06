@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 public class DeviceDtoRq {
 
-    private long id;
+    private Long id;
 
     private String deviceName;
 
-    private String deviceGroupName;
+    private Long deviceGroupId;
+
+    private String imei;
 
 }

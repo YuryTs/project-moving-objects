@@ -9,6 +9,7 @@ create table devices
     id               bigserial primary key,
     name             varchar(255),
     imei             varchar(255) unique not null,
+    device_group_id  bigserial,
     device_groups_id bigint references device_groups (id)
 );
 create table geopositions
@@ -21,7 +22,7 @@ create table geopositions
     speed                 double precision,
     direction             double precision,
 --     device_id             bigserial,
-    device_id            bigint references devices (id)
+    device_id             bigint references devices (id)
 );
 
 
@@ -33,7 +34,7 @@ values ('group1'),
        ('group4');
 
 
-insert into devices (name, device_groups_id, imei)
+insert into devices (name, device_group_id, imei)
 values ('gps1', 1, '22www'),
        ('gps2', 2, '44qwe'),
        ('gps3', 3, 'wwww'),

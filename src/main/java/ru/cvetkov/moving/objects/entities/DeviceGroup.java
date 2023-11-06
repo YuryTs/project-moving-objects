@@ -25,7 +25,7 @@ public class DeviceGroup {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "device_groups_id", insertable = false, updatable = false)
-//    @JsonManagedReference
+    @JsonManagedReference
     private List<Device> deviceList;
 
 }

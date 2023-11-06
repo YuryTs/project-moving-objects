@@ -10,6 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class DeviceGroupDtoRequest {
+
     private String name;
+
     List<Long> deviceIds;
 }

@@ -45,7 +45,7 @@ public class DeviceController {
     }
 
     @GetMapping("/list")
-    public List<DeviceDtoRs> getPageDevices(@RequestParam(defaultValue = "1") int firstPage, @RequestParam(defaultValue = "3") int pageSize) {
+    public List<DeviceDtoRs> getPageDevices(@RequestParam(defaultValue = "0") int firstPage, @RequestParam(defaultValue = "3") int pageSize) {
         List<Device> devices = deviceService.getPageAsListDevices(firstPage, pageSize);
         return devices.stream().map(deviceConverter::entityToDto).collect(Collectors.toList());
     }
@@ -60,7 +60,7 @@ public class DeviceController {
     public ResponseEntity<DeviceDtoRs> updateDevice(@RequestBody DeviceDtoRq deviceDtoRq) {
         if (deviceDtoRq == null || deviceDtoRq.getId() <= 0 || StringUtils.isEmpty(deviceDtoRq.getDeviceName())) {
             LOG.info("request for updateDevice has INVALID_PARAMS");
-            throw  new ValidationException(new ErrorDto("INVALID_PARAM", "You should check request`s parameters"));
+            throw  new ValidationException(new ErrorDto("INVALID_PARAMS", "You should check request`s parameters"));
         }
         Device device = deviceService.updateDevice(deviceDtoRq);
         return new ResponseEntity<>(deviceConverter.entityToDto(device), HttpStatus.OK);
@@ -70,7 +70,7 @@ public class DeviceController {
     public ResponseEntity<MessageAnswerDto> deleteById(@PathVariable Long id) {
         if (id <= 0) {
             LOG.info("request for updateDevice has INVALID_PARAMS");
-            throw  new ValidationException(new ErrorDto("INVALID_PARAM", "You should check request`s parameters"));
+            throw  new ValidationException(new ErrorDto("INVALID_PARAMS", "You should check request`s parameters"));
         }
         if (!deviceService.deletById(id)) {
             throw  new ResourceNotFoundException("Device with id = " + id + " not found.");
@@ -85,6 +85,9 @@ public class DeviceController {
             @RequestParam Timestamp startDate,
             @RequestParam Timestamp endDate
     ) {
+        if (startDate.after(endDate)){
+            throw new ValidationException(new ErrorDto("INVALID_PARAMS", "startDate must be before endDate"));
+        }
         List<Geoposition> geopositions = deviceService.getGeopositionsByDeviceIdAndDateInterval(deviceId, startDate, endDate);
         return geopositions.stream().map(geopositionConverter::entityToDo).collect(Collectors.toList());
     }

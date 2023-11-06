@@ -7,11 +7,11 @@ import lombok.*;
 @Data
 public class DeviceDtoRs {
 
-    private long id;
+    private Long id;
 
     private String deviceName;
 
     private long deviceGroupId;
 
-    private String deviceGroupName;
+//    private String deviceGroupName;
 }

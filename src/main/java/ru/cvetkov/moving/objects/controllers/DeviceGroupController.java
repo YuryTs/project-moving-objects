@@ -34,7 +34,7 @@ public class DeviceGroupController {
     }
 
     @GetMapping("/list")
-    public List<DeviceGroupDtoRs> getPageDeviceGroup(@RequestParam(defaultValue = "1") int firstPage, @RequestParam(defaultValue = "3") int pageSize) {
+    public List<DeviceGroupDtoRs> getPageDeviceGroup(@RequestParam(defaultValue = "0") int firstPage, @RequestParam(defaultValue = "5") int pageSize) {
         List<DeviceGroup> deviceGroups = deviceGroupService.getPageAsListDevices(firstPage, pageSize);
         return deviceGroups.stream().map(deviceGroupConverter::entityToDto).collect(Collectors.toList());
     }
@@ -47,15 +47,15 @@ public class DeviceGroupController {
         return deviceGroupConverter.entityToDto(deviceGroupService.updateDeviceGroupByIdGroup(deviceGroupDtoRq));
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<MessageAnswerDto> removeDevicesFromGroup(@PathVariable Long deviceGroupId){
-        if (deviceGroupId <= 0){
+    @DeleteMapping("/deletebyid/{id}")
+    public ResponseEntity<MessageAnswerDto> removeDevicesFromGroup(@PathVariable Long id){
+        if (id <= 0){
             throw new ValidationException(new ErrorDto("INVALID_PARAM", "Your request shouldn`t be null."));
         }
-        if (!deviceGroupService.deleteDeviceGroupById(deviceGroupId)) {
-            throw  new ResourceNotFoundException("DeviceGroup with id = " + deviceGroupId + " not found.");
+        if (!deviceGroupService.deleteDeviceGroupById(id)) {
+            throw  new ResourceNotFoundException("DeviceGroup with id = " + id + " not found.");
         }
-        return new ResponseEntity<>(new MessageAnswerDto("DeviceGroup with id = " + deviceGroupId + " deleted."), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageAnswerDto("DeviceGroup with id = " + id + " was deleted."), HttpStatus.OK);
     }
 
 

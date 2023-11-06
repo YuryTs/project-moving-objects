@@ -10,8 +10,8 @@ public class DeviceConverter {
         return new DeviceDtoRs(
                 device.getId(),
                 device.getName(),
-                device.getDeviceGroupId(),
-                device.getDeviceGroup().getDeviceGroupName()
+                device.getDeviceGroupId()
+//                device.getDeviceGroup()
         );
     }
 }

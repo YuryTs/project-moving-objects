@@ -11,4 +11,8 @@ import java.util.Optional;
 public interface DeviceRepository extends JpaRepository<Device, Long> {
     Optional<Device> getDeviceByImei(String imei);
 
+    Optional<Device> findById(Long id);
+
+    Device save(Device device);
+
 }

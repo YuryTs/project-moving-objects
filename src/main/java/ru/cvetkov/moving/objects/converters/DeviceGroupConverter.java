@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Component
 public class DeviceGroupConverter {
     public DeviceGroupDtoRs entityToDto(DeviceGroup deviceGroup){
-        List<Pair<Long,String>> pairs = deviceGroup.getDeviceList().stream().map(device -> new Pair(device.getId(), device.getName())).collect(Collectors.toList());
+        List<Pair<Long,String>> pairs = deviceGroup.getDeviceList().stream().map(device -> new Pair<Long, String>(device.getId(), device.getName())).collect(Collectors.toList());
         return new DeviceGroupDtoRs(
                 deviceGroup.getId(),
                 deviceGroup.getDeviceGroupName(),

@@ -1,6 +1,7 @@
 package ru.cvetkov.moving.objects.services;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,11 @@ import ru.cvetkov.moving.objects.exeptions.ValidationException;
 import ru.cvetkov.moving.objects.repositories.DeviceGroupRepository;
 import ru.cvetkov.moving.objects.repositories.DeviceRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,8 +32,9 @@ public class DeviceGroupServiceImpl implements DeviceGroupService {
     private final DeviceGroupRepository deviceGroupRepository;
     private final DeviceService deviceService;
     private final DeviceRepository deviceRepository;
+    private final EntityManager em;
 
-    private List<Device> devices = new ArrayList<>();
+
 //    @Override
 //    public DeviceGroup createNewDeviceGroup(DeviceGroupDtoRq deviceGroupRq) {
 //        DeviceGroup deviceGroup = new DeviceGroup();
@@ -42,31 +47,56 @@ public class DeviceGroupServiceImpl implements DeviceGroupService {
     @Transactional
     public DeviceGroup createNewDeviceGroup(DeviceGroupDtoRq deviceGroupDtoRq) {
         DeviceGroup deviceGroup = new DeviceGroup();
+        List<Device> devices = new ArrayList<>();
         deviceGroup.setDeviceGroupName(deviceGroupDtoRq.getDeviceGroupName());
+        deviceGroup.setDeviceList(devices);
+        DeviceGroup savedDeviceGroup = deviceGroupRepository.save(deviceGroup);
+
+        if (deviceGroupDtoRq.getDeviceIds().isEmpty()) {
+            return savedDeviceGroup;
+        }
+        Long deviceGroupId = savedDeviceGroup.getId();
         deviceGroupDtoRq.getDeviceIds().stream().forEach(id -> deviceRepository.findById(id).ifPresent(device -> {
-                    device.setDeviceGroupId(id);
+                    device.setDeviceGroupId(deviceGroupId);
                     deviceRepository.save(device);
+                    devices.add(device);
                 })
         );
-        return deviceGroupRepository.save(deviceGroup);
+        savedDeviceGroup.setDeviceList(devices);
+
+        return savedDeviceGroup;
     }
 
     @Override
-    public DeviceGroup updateDeviceGroupByIdGroup(DeviceGroupDtoRq deviceGroupDtoRq)  {
-        try {
-            deviceGroupRepository.updateDeviceIdsForDeviceGroup(deviceGroupDtoRq.getDeviceIds(), deviceGroupDtoRq.getId());
-            return deviceGroupRepository.getReferenceById(deviceGroupDtoRq.getId());
-        } catch (Exception e){
-            throw new ResourceNotFoundException("Request has wrong parametres");
+    @Transactional
+    public DeviceGroup updateDeviceGroupByIdGroup(DeviceGroupDtoRq deviceGroupDtoRq) {
+        DeviceGroup deviceGroup = deviceGroupRepository.findById(deviceGroupDtoRq.getId()).orElseThrow(() ->new ResourceNotFoundException("Not fined group with id = " + deviceGroupDtoRq.getId()));
+        if (StringUtils.isNotEmpty(deviceGroupDtoRq.getDeviceGroupName())){
+            deviceGroup.setDeviceGroupName(deviceGroupDtoRq.getDeviceGroupName());
         }
+        List<Device> devices = new ArrayList<>();
+
+        if (deviceGroup != null) {
+            deviceGroupDtoRq.getDeviceIds().stream().forEach(id -> deviceRepository.findById(id).ifPresent(device -> {
+                        device.setDeviceGroupId(deviceGroupDtoRq.getId());
+                        deviceRepository.save(device);
+                        devices.add(device);
+                    })
+            );
+            deviceGroup.setDeviceList(devices);
+            deviceGroupRepository.save(deviceGroup);
+        }
+
+        return deviceGroup;
+
     }
 
     @Override
-    public List<DeviceGroup> getPageAsListDevices(int firstPage, int pageSize){
-        if (firstPage < 0){
+    public List<DeviceGroup> getPageAsListDevices(int firstPage, int pageSize) {
+        if (firstPage < 0) {
             firstPage = 0;
         }
-        if (pageSize > MAX_PAGE_SIZE){
+        if (pageSize > MAX_PAGE_SIZE) {
             pageSize = MAX_PAGE_SIZE;
         }
         return deviceGroupRepository.findAll(PageRequest.of(firstPage, pageSize)).getContent();
@@ -84,7 +114,6 @@ public class DeviceGroupServiceImpl implements DeviceGroupService {
     public DeviceGroup findDevcesByGroupName(String name) {
         return deviceGroupRepository.getDeviceGroupByName(name).orElseThrow(() -> new ResourceNotFoundException("DeviceGroup with name = " + name + " not found."));
     }
-
 
 
 }

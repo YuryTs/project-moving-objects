@@ -2,6 +2,7 @@ package ru.cvetkov.moving.objects.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -37,12 +38,18 @@ public class Device {
     @Column(unique = true)
     String imei;
 
-
-    public Device(String name, String imei, DeviceGroup deviceGroup) {
+    public Device(String name, Long deviceGroupId, String imei) {
         this.name = name;
+//        this.deviceGroup = deviceGroup;
+        this.deviceGroupId = deviceGroupId;
         this.imei = imei;
-        this.deviceGroup = deviceGroup;
     }
+
+//    public Device(String name, String imei, DeviceGroup deviceGroup) {
+//        this.name = name;
+//        this.imei = imei;
+//        this.deviceGroup = deviceGroup;
+//    }
 
     @Override
     public boolean equals(Object o) {

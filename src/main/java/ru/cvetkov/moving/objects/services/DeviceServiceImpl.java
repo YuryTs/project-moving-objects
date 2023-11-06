@@ -7,8 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cvetkov.moving.objects.dto.DeviceDtoRq;
+import ru.cvetkov.moving.objects.dto.ErrorDto;
 import ru.cvetkov.moving.objects.entities.Device;
+import ru.cvetkov.moving.objects.entities.DeviceGroup;
 import ru.cvetkov.moving.objects.entities.Geoposition;
+import ru.cvetkov.moving.objects.exeptions.ValidationException;
 import ru.cvetkov.moving.objects.repositories.DeviceGroupRepository;
 import ru.cvetkov.moving.objects.repositories.DeviceRepository;
 
@@ -70,9 +73,19 @@ public class DeviceServiceImpl implements DeviceService{
     @Override
     public Device createNewDevice(DeviceDtoRq deviceDtoRq) {
         Device device = new Device();
+        String imei = deviceDtoRq.getImei();
+        if (repository.getDeviceByImei(imei).isPresent()){
+            throw new ValidationException(new ErrorDto("INVALID_PARAMS", "You can`t create device with imai = " + imei));
+        }
         device.setName(deviceDtoRq.getDeviceName());
-//        device.setImei(deviceDtoRq.IMei);
-//        device.setDeviceGroup(deviceGroupService.getDeviceGroupBuId(deviceDtoRq.getId()));
+        device.setImei(deviceDtoRq.getImei());
+        device.setDeviceGroupId(device.getDeviceGroupId());
+        if(deviceDtoRq.getDeviceGroupId() == null){
+            device.setDeviceGroupId(1L);
+        } else {
+            device.setDeviceGroupId(deviceDtoRq.getDeviceGroupId());
+        }
+//        device.setDeviceGroup(deviceDtoRq.);
         return repository.save(device);
     }
 
