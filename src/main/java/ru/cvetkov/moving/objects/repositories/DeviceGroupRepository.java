@@ -16,8 +16,6 @@ public interface DeviceGroupRepository extends JpaRepository<DeviceGroup, Long> 
     @Query(value = "SELECT gr FROM DeviceGroup gr WHERE gr.deviceGroupName = :name")
     Optional<DeviceGroup> getDeviceGroupByName(@Param("name") String name);
 
-//    @Modifying
-//    @Transactional
     @Query("UPDATE DeviceGroup dg SET dg.deviceList = :deviceIds WHERE dg.id = :devicegroupId")
     void updateDeviceIdsForDeviceGroup(@Param("deviceIds") List<Long> deviceIds, @Param("devicegroupId") Long devicegroupId);
 

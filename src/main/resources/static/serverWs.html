@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CurrentGeoposition</title>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.4.0/dist/sockjs.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" type="text/javascript"></script>
+
+  <script type="text/JavaScript">
+    function getGeoposition() {
+      const stompClient = Stomp.over(new SockJS('/app/moving-object'));
+      stompClient.connect({}, (frame) => {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/currentGeoposition', (geoMsg) => document.getElementById("currentGeoposition").innerHTML = geoMsg.body);
+      });
+    }
+  </script>
+</head>
+<
+<body onload="getGeoposition();">
+<div id="currentGeoposition"></div>
+</body>
+
+</html>

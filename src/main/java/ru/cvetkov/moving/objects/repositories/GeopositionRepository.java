@@ -22,9 +22,4 @@ public interface GeopositionRepository extends JpaRepository<Geoposition, Long>{
                 @Param("startDate") Timestamp startDate,
                 @Param("endDate") Timestamp endDate
         );
-
-//        List<Geoposition> findAllWithLatestGeopositionDateTime();
-
-
-
 }

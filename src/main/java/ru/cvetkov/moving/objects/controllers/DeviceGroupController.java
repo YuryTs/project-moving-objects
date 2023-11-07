@@ -28,7 +28,7 @@ public class DeviceGroupController {
     }
 
     @PostMapping("/new")
-    public DeviceGroupDtoRs createDeviceGroup(@RequestBody DeviceGroupDtoRq deviceGroupRq){ //todo validation
+    public DeviceGroupDtoRs createDeviceGroup(@RequestBody DeviceGroupDtoRq deviceGroupRq){
         DeviceGroup deviceGroup = deviceGroupService.createNewDeviceGroup(deviceGroupRq);
         return deviceGroupConverter.entityToDto(deviceGroup);
     }

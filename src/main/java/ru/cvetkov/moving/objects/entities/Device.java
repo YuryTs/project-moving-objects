@@ -40,16 +40,10 @@ public class Device {
 
     public Device(String name, Long deviceGroupId, String imei) {
         this.name = name;
-//        this.deviceGroup = deviceGroup;
         this.deviceGroupId = deviceGroupId;
         this.imei = imei;
     }
 
-//    public Device(String name, String imei, DeviceGroup deviceGroup) {
-//        this.name = name;
-//        this.imei = imei;
-//        this.deviceGroup = deviceGroup;
-//    }
 
     @Override
     public boolean equals(Object o) {

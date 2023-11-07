@@ -2,7 +2,6 @@ package ru.cvetkov.moving.objects.entities;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -36,8 +35,7 @@ public class Geoposition {
     @Getter
     @Column(name = "direction")
     private Double direction;
-//    @Column(name = "device_id")
-//    private long deviceId;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "device_id")
     private Device device;
@@ -50,7 +48,6 @@ public class Geoposition {
         this.speed = builder.speed;
         this.altitude = builder.altitude;
         this.direction = builder.direction;
-//        this.deviceId = builder.deviceId;
         this.device = builder.device;
     }
 
@@ -62,7 +59,6 @@ public class Geoposition {
         private Double altitude;
         private Double speed;
         private Double direction;
-//        private long deviceId;
         private Device device;
 
         public Builder() {
@@ -75,7 +71,6 @@ public class Geoposition {
         }
 
         private void clean() {
-//            deviceId = Long.parseLong(null);
             longitude = null;
             latitude = null;
             altitude = null;
@@ -88,12 +83,6 @@ public class Geoposition {
             this.device = device;
             return this;
         }
-
-
-//        public Builder device(long deviceId) {
-//            this.deviceId = deviceId;
-//            return this;
-//        }
 
         public Builder longitude(Double longitude) {
             this.longitude = longitude;
@@ -124,17 +113,7 @@ public class Geoposition {
             this.geopositionDateTime = geopositionDateTime;
             return this;
         }
-
-
     }
-
-    //    public long getDeviceId() {
-//        return deviceId;
-//    }
-//
-//    public void setDeviceId(long deviceId) {
-//        this.deviceId = deviceId;
-//    }
 
     @Override
     public boolean equals(Object o) {
@@ -150,7 +129,6 @@ public class Geoposition {
         if (speed != null ? !speed.equals(geoposition.speed) : geoposition.speed != null) { return false; }
         if (direction != null ? !direction.equals(geoposition.direction) : geoposition.direction != null) { return false; }
         return !(true);
-//        return !(deviceId != null ? !deviceId.equals(geoposition.deviceId) : geoposition.deviceId != null);
 
     }
 
@@ -162,7 +140,6 @@ public class Geoposition {
         result = 31 * result + (altitude != null ? altitude.hashCode() : 0);
         result = 31 * result + (speed != null ? speed.hashCode() : 0);
         result = 31 * result + (direction != null ? direction.hashCode() : 0);
-//        result = 31 * result + (deviceId != null ? deviceId.hashCode() : 0);
         return result;
     }
 

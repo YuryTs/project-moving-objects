@@ -26,22 +26,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DeviceGroupServiceImpl implements DeviceGroupService {
+
     @Value("${spring.device_groups.max.page_size:5}")
     private Integer MAX_PAGE_SIZE;
-
     private final DeviceGroupRepository deviceGroupRepository;
     private final DeviceService deviceService;
     private final DeviceRepository deviceRepository;
     private final EntityManager em;
-
-
-//    @Override
-//    public DeviceGroup createNewDeviceGroup(DeviceGroupDtoRq deviceGroupRq) {
-//        DeviceGroup deviceGroup = new DeviceGroup();
-//        deviceGroup.setDeviceGroupName(deviceGroupRq.getDeviceGroupName());
-//        deviceGroup.setDeviceList(deviceGroupRq.getDeviceList());
-//        return deviceGroupRepository.save(deviceGroup);
-//    }
 
     @Override
     @Transactional
@@ -86,9 +77,7 @@ public class DeviceGroupServiceImpl implements DeviceGroupService {
             deviceGroup.setDeviceList(devices);
             deviceGroupRepository.save(deviceGroup);
         }
-
         return deviceGroup;
-
     }
 
     @Override

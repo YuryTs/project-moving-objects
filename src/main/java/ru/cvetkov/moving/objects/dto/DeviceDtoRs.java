@@ -13,5 +13,4 @@ public class DeviceDtoRs {
 
     private long deviceGroupId;
 
-//    private String deviceGroupName;
 }

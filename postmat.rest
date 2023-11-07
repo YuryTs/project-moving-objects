@@ -1,7 +1,6 @@
                                     DeviceController:
 
-GET
-localhost:8082/app/device_control/byid/2
+GET localhost:8082/app/device_control/byid/2
 _________________________________________________
 
 GET

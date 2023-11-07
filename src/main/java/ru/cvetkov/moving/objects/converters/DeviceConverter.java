@@ -11,7 +11,6 @@ public class DeviceConverter {
                 device.getId(),
                 device.getName(),
                 device.getDeviceGroupId()
-//                device.getDeviceGroup()
         );
     }
 }
