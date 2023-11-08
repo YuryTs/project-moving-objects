@@ -24,7 +24,7 @@ public class DeviceGroupController {
 
     @GetMapping("/byname/{name}")
     public DeviceGroupDtoRs getGroupByName(@PathVariable String name){
-        return deviceGroupConverter.entityToDto(deviceGroupService.findDevcesByGroupName(name));
+        return deviceGroupConverter.entityToDto(deviceGroupService.findDevicesByGroupName(name));
     }
 
     @PostMapping("/new")

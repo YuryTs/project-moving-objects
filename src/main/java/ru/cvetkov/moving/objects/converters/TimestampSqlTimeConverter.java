@@ -1,9 +1,7 @@
 package ru.cvetkov.moving.objects.converters;
 
-import com.google.protobuf.Timestamp;
-
-public class TimestampYodaTimeConverter {
-    public TimestampYodaTimeConverter() {
+public class TimestampSqlTimeConverter {
+    public TimestampSqlTimeConverter() {
     }
 
     public static java.sql.Timestamp convertToSqlTimestamp(com.google.protobuf.Timestamp timestamp) {

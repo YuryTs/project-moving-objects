@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 
 import java.util.Optional;
 
-import static ru.cvetkov.moving.objects.converters.TimestampYodaTimeConverter.convertToSqlTimestamp;
+import static ru.cvetkov.moving.objects.converters.TimestampSqlTimeConverter.convertToSqlTimestamp;
 
 @Service
 public class ExternalGrpcService extends ExternalGeopositionServiceGrpc.ExternalGeopositionServiceImplBase {
@@ -28,12 +28,13 @@ public class ExternalGrpcService extends ExternalGeopositionServiceGrpc.External
 
     private final DeviceService deviceService;
     private final GeopositionService geopositionService;
-    private final GeopositionListener listener;
 
-    public ExternalGrpcService(DeviceServiceImpl deviceService, GeopositionServiceImpl geopositionService, GeopositionListener listener) {
+    private final EventPublisher geoPublisher;
+
+    public ExternalGrpcService(DeviceServiceImpl deviceService, GeopositionServiceImpl geopositionService, EventPublisher geoPublisher) {
         this.deviceService = deviceService;
         this.geopositionService = geopositionService;
-        this.listener = listener;
+        this.geoPublisher = geoPublisher;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class ExternalGrpcService extends ExternalGeopositionServiceGrpc.External
                         || request.getLongitude() == 0.0
                         || request.getSpeed() < 0
         ) {
-            LOG.error("Bad putExternalGeoposition request content: {}", request);
+            LOG.error("Bad putExternalGeoposition request content: {}", request); //TODO move to catch
             responseObserver.onError(Status.INVALID_ARGUMENT.asRuntimeException());
             return;
         }
@@ -71,20 +72,15 @@ public class ExternalGrpcService extends ExternalGeopositionServiceGrpc.External
                     .direction(request.getDirection())
                     .device(optionalDevice.get())
                     .build();
-            LOG.info("geoposition = {}", geoposition); //todo delete before finish project
             geopositionService.saveGeoposition(geoposition);
             Empty response = Empty.getDefaultInstance();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
             LOG.info("Geoposition for deviceId = {} has saved successfully", optionalDevice.get().getId());
 
-            EventPublisher publisher = new EventPublisher();
-            publisher.start();
-
-            EventedList list = new EventedList();
-            list.setPublisher(publisher);
-            publisher.subscribe(EventType.ADD, listener);
-            list.add(geoposition);
+            Event event = new Event(EventType.ADD, geoposition);
+            geoPublisher.publish(event);
+            LOG.info("Geoposition for deviceId = {} has translated to webSocket", optionalDevice.get().getId());
 
         } catch (Exception e) {
             LOG.error("Error during putExternalGeoposition for imei = {}", imei);

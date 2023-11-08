@@ -18,15 +18,17 @@ import java.sql.Timestamp;
 
 @Service
 @RequiredArgsConstructor
-public class DeviceServiceImpl implements DeviceService{
+public class DeviceServiceImpl implements DeviceService {
 
     private final DeviceRepository repository;
-    private final GeopositionService geopositionService;
 
     @Value("${spring.max.page_size:5}")
     private Integer MAX_PAGE_SIZE;
+    @Value("${spring.default.device_group_id:1}")
+    private Long DEFAULT_DEVICE_GROUP_ID;
+
     @Override
-    public Optional<Device> getById(Long id){
+    public Optional<Device> getById(Long id) {
         return repository.findById(id);
     }
 
@@ -36,11 +38,11 @@ public class DeviceServiceImpl implements DeviceService{
     }
 
     @Override
-    public List<Device> getPageAsListDevices(int firstPage, int pageSize){
-        if (firstPage < 0){
+    public List<Device> getPageAsListDevices(int firstPage, int pageSize) {
+        if (firstPage < 0) {
             firstPage = 0;
         }
-        if (pageSize > MAX_PAGE_SIZE){
+        if (pageSize > MAX_PAGE_SIZE) {
             pageSize = MAX_PAGE_SIZE;
         }
         return repository.findAll(PageRequest.of(firstPage, pageSize)).getContent();
@@ -48,46 +50,42 @@ public class DeviceServiceImpl implements DeviceService{
 
     @Override
     @Transactional
-    public Device updateDevice(DeviceDtoRq deviceDtoRq){
-        Device deviceForUpdate = repository.findById(deviceDtoRq.getId()).get();
-        deviceForUpdate.setName(deviceDtoRq.getDeviceName()); //todo нужно ли иметь возможность менять отсюда группу в которую входит устройство
+    public Device updateDevice(DeviceDtoRq deviceDtoRq) {
+        Device deviceForUpdate = repository.findById(deviceDtoRq.getId()).get();//TODO validation if DB hasn`t that deviceId
+        deviceForUpdate.setName(deviceDtoRq.getDeviceName());
+        if (!deviceDtoRq.getDeviceName().isEmpty()) {
+            deviceForUpdate.setDeviceGroupId(deviceDtoRq.getId());
+        }
         return repository.save(deviceForUpdate);
     }
 
     @Override
     @Transactional
     public boolean deletById(Long id) {
-        boolean deleted = false;
         Optional<Device> optionalDevice = repository.findById(id);
-        if (optionalDevice.isEmpty()){
-           return deleted;
+        if (optionalDevice.isEmpty()) {
+            return false;
         }
         repository.deleteById(id);
-        deleted = true;
-        return deleted;
+        return true;
     }
 
     @Override
     public Device createNewDevice(DeviceDtoRq deviceDtoRq) {
         Device device = new Device();
         String imei = deviceDtoRq.getImei();
-        if (repository.getDeviceByImei(imei).isPresent()){
+        if (repository.getDeviceByImei(imei).isPresent()) {
             throw new ValidationException(new ErrorDto("INVALID_PARAMS", "You can`t create device with imai = " + imei));
         }
         device.setName(deviceDtoRq.getDeviceName());
         device.setImei(deviceDtoRq.getImei());
         device.setDeviceGroupId(device.getDeviceGroupId());
-        if(deviceDtoRq.getDeviceGroupId() == null){
-            device.setDeviceGroupId(1L);
+        if (deviceDtoRq.getDeviceGroupId() == null) {
+            device.setDeviceGroupId(DEFAULT_DEVICE_GROUP_ID);
         } else {
             device.setDeviceGroupId(deviceDtoRq.getDeviceGroupId());
         }
         return repository.save(device);
-    }
-
-    @Override
-    public List<Geoposition> getGeopositionsByDeviceIdAndDateInterval(Long deviceId, Timestamp startDate, Timestamp endDate) {
-        return geopositionService.getGeopositionsByDeviceIdAndDateInterval(deviceId, startDate, endDate);
     }
 
 }

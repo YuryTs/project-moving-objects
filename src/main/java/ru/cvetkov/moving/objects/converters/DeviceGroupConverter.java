@@ -1,17 +1,16 @@
 package ru.cvetkov.moving.objects.converters;
 
-import javafx.util.Pair;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import ru.cvetkov.moving.objects.dto.DeviceGroupDtoRs;
 import ru.cvetkov.moving.objects.entities.DeviceGroup;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class DeviceGroupConverter {
     public DeviceGroupDtoRs entityToDto(DeviceGroup deviceGroup){
-        List<Pair<Long,String>> pairs = deviceGroup.getDeviceList().stream().map(device -> new Pair<Long, String>(device.getId(), device.getName())).collect(Collectors.toList());
+        List<Pair<Long,String>> pairs = deviceGroup.getDeviceList().stream().map(device -> Pair.of(device.getId(), device.getName())).collect(Collectors.toList());
         return new DeviceGroupDtoRs(
                 deviceGroup.getId(),
                 deviceGroup.getDeviceGroupName(),

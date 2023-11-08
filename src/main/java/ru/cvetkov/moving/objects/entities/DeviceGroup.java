@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 @Table(name = "device_groups")
 @Entity
 public class DeviceGroup {
@@ -23,9 +22,17 @@ public class DeviceGroup {
     @Column(name = "name", nullable = true, unique = true)
     private String deviceGroupName;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "device_groups_id", insertable = false, updatable = false)
     @JsonManagedReference
     private List<Device> deviceList;
 
+    @Override
+    public String toString() {
+        return "DeviceGroup{" +
+                "id=" + id +
+                ", deviceGroupName='" + deviceGroupName + '\'' +
+                ", deviceList=" + deviceList +
+                '}';
+    }
 }

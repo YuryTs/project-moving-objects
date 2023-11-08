@@ -10,7 +10,7 @@ public interface DeviceGroupService {
 
     boolean deleteDeviceGroupById(Long deviceGroupId);
 
-    DeviceGroup findDevcesByGroupName(String name);
+    DeviceGroup findDevicesByGroupName(String name);
 
     List<DeviceGroup> getPageAsListDevices(int firstPage, int pageSize);
 

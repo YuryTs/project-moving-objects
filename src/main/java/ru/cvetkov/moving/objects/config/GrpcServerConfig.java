@@ -8,14 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.cvetkov.moving.objects.entities.Geoposition;
 import ru.cvetkov.moving.objects.services.DeviceServiceImpl;
 import ru.cvetkov.moving.objects.services.ExternalGrpcService;
 import ru.cvetkov.moving.objects.services.GeopositionServiceImpl;
-import ru.cvetkov.moving.objects.utils.GeopositionListener;
-
+import ru.cvetkov.moving.objects.utils.EventPublisher;
 import java.io.IOException;
-import java.util.concurrent.LinkedBlockingDeque;
 
 @Configuration
 @AllArgsConstructor
@@ -27,7 +24,7 @@ public class GrpcServerConfig {
     @Autowired
     private GeopositionServiceImpl geopositionService;
     @Autowired
-    private GeopositionListener listener;
+    private EventPublisher geoPublisher;
 
 
 
@@ -37,7 +34,7 @@ public class GrpcServerConfig {
     @Bean
     public Server grpcServer() throws IOException {
         return NettyServerBuilder.forPort(grpcServerPort)
-                .addService(new ExternalGrpcService(deviceService, geopositionService, listener))
+                .addService(new ExternalGrpcService(deviceService, geopositionService, geoPublisher))
                 .build()
                 .start();
     }

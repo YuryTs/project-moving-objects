@@ -18,6 +18,7 @@ import ru.cvetkov.moving.objects.entities.Geoposition;
 import ru.cvetkov.moving.objects.exeptions.ResourceNotFoundException;
 import ru.cvetkov.moving.objects.exeptions.ValidationException;
 import ru.cvetkov.moving.objects.services.DeviceService;
+import ru.cvetkov.moving.objects.services.GeopositionService;
 
 import java.lang.invoke.MethodHandles;
 import java.sql.Timestamp;
@@ -33,6 +34,8 @@ public class DeviceController {
     private final DeviceService deviceService;
     private final DeviceConverter deviceConverter;
     private final GeopositionConverter geopositionConverter;
+    private final GeopositionService geopositionService;
+
 
 
     @GetMapping("/byid/{id}")
@@ -81,7 +84,6 @@ public class DeviceController {
         return new ResponseEntity<>(new MessageAnswerDto("Device with id = " + id + " deleted."), HttpStatus.OK);
     }
 
-    // Request with __Date as 2023-08-15 08:06:21
     @GetMapping("/geopositions")
     public List<GeopositionDto> getGeopositionsForDevice(
             @RequestParam Long deviceId,
@@ -91,13 +93,7 @@ public class DeviceController {
         if (startDate.after(endDate)){
             throw new ValidationException(new ErrorDto("INVALID_PARAMS", "startDate must be before endDate"));
         }
-        List<Geoposition> geopositions = deviceService.getGeopositionsByDeviceIdAndDateInterval(deviceId, startDate, endDate);
+        List<Geoposition> geopositions = geopositionService.getGeopositionsByDeviceIdAndDateInterval(deviceId, startDate, endDate);
         return geopositions.stream().map(geopositionConverter::entityToDo).collect(Collectors.toList());
-    }
-
-    @MessageMapping("/currentgeoposition")
-    @SendTo("/topic/activity")
-    public Message change(Message message) {
-        return null;
     }
 }

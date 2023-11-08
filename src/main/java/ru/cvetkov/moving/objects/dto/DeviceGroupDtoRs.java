@@ -1,9 +1,9 @@
 package ru.cvetkov.moving.objects.dto;
 
-import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.util.Pair;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ public class DeviceGroupDtoRs {
 
     private String deviceGroupName;
 
-    private List<Pair<Long, String>> devices; //todo just for card
+    private List<Pair<Long, String>> devices;
 }

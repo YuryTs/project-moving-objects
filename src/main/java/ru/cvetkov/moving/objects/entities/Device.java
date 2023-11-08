@@ -2,10 +2,7 @@ package ru.cvetkov.moving.objects.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
-import org.springframework.lang.Nullable;
-
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +28,7 @@ public class Device {
     @Column(name = "device_group_id")
     private Long deviceGroupId;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "device_id")
     private List<Geoposition> geopositions;
 
@@ -62,7 +59,9 @@ public class Device {
         return "Device{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", deviceGroup=" + (deviceGroup != null ? deviceGroup.getId() : "null") +
+                ", deviceGroup=" + deviceGroup +
+                ", deviceGroupId=" + deviceGroupId +
+                ", geopositions=" + geopositions +
                 ", imei='" + imei + '\'' +
                 '}';
     }

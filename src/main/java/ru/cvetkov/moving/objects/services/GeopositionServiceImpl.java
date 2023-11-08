@@ -7,7 +7,6 @@ import ru.cvetkov.moving.objects.repositories.GeopositionRepository;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

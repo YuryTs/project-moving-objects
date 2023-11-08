@@ -2,20 +2,22 @@
 <html>
 <head>
   <title>CurrentGeoposition</title>
+<!--  <script src="/webjars/sockjs-client/sockjs.min.js"></script>-->
+<!--  <script src="/webjars/stomp-websocket/stomp.min.js"></script>-->
   <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.4.0/dist/sockjs.min.js" type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" type="text/javascript"></script>
 
   <script type="text/JavaScript">
     function getGeoposition() {
-      const stompClient = Stomp.over(new SockJS('/app/moving-object'));
+      const stompClient = Stomp.over(new SockJS('/app/moving-object')); //подключиться на этот эндпойнт
       stompClient.connect({}, (frame) => {
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/currentGeoposition', (geoMsg) => document.getElementById("currentGeoposition").innerHTML = geoMsg.body);
+        stompClient.subscribe('/topic/currentGeoposition', (geoMsg) => document.getElementById("currentGeoposition").innerHTML = geoMsg.body); //подписываемся на сообщения, из сообщения получаем боди и передаем его
       });
     }
   </script>
 </head>
-<
+
 <body onload="getGeoposition();">
 <div id="currentGeoposition"></div>
 </body>

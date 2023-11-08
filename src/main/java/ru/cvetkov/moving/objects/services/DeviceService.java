@@ -22,6 +22,4 @@ public interface DeviceService {
     boolean deletById(Long id);
 
     Device createNewDevice(DeviceDtoRq deviceDtoRq);
-
-    List<Geoposition> getGeopositionsByDeviceIdAndDateInterval(Long deviceId, Timestamp startDate, Timestamp endDate);
 }

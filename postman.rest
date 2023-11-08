@@ -1,0 +1,188 @@
+###
+GET localhost:8082/app/device_control/byid/2
+###
+GET localhost:8082/app/device_control/byimei/aaa333
+###
+GET localhost:8082/app/device_control/list
+###
+GET localhost:8082/app/device_control/list?firstPage=1&pageSize=3
+###
+POST localhost:8082/app/device_control/new
+
+#    (if deviceGroupId isEmpty or NUll - default group will be 1)
+#request:
+#{
+#    "deviceName": "Person1",
+#    "imei": "POP"
+#}
+#answer:
+#{
+#    "id": 8,
+#    "deviceName": "Person1",
+#    "deviceGroupId": 1
+#}
+###
+PUT localhost:8082/app/device_control/update
+#request (you can change deviceName):
+#{
+#    "id": 8,
+#    "deviceName": "POPular"
+#}
+#answer:
+#{
+#    "id": 8,
+#    "deviceName": "POPular",
+#    "deviceGroupId": 1
+#}
+
+DELETE - none
+###
+GET localhost:8082/app/device_control/geopositions/?deviceId=5&startDate=2023-08-01 08:06:21&endDate=2023-08-20 08:06:21
+#before you should make some geopositions use grpc
+    // Request with __Date as 2023-08-15 08:06:21
+###
+
+DeviceGroupController
+###
+GET localhost:8082/app/group/byname/group1
+#answer:
+#{
+#    "id": 1,
+#    "deviceGroupName": "group1",
+#    "devices": []
+#}
+___________________________________________
+### (you can put list deviceIds for added to newCreation group)
+POST localhost:8082/app/group/new
+###
+request:
+{
+    "deviceGroupName": "Sonar",
+    "deviceIds": [1,2,3,4]
+}
+answer:
+{
+    "id": 6,
+    "deviceGroupName": "Sonar",
+    "devices": [
+        {
+            "first": 1,
+            "second": "gps1"
+        },
+        {
+            "first": 2,
+            "second": "gps2"
+        },
+        {
+            "first": 3,
+            "second": "gps3"
+        },
+        {
+            "first": 4,
+            "second": "gps4"
+        }
+    ]
+}
+###
+#(you can change name or list of deviceIds)
+PUT localhost:8082/app/group/update
+###
+request:
+{
+    "deviceIds": [2,3,4],
+    "id": 2,
+    "deviceGroupName": "GUGA"
+}
+answer:
+{
+    "id": 2,
+    "deviceGroupName": "GUGA",
+    "devices": [
+        {
+            "key": 2,
+            "value": "gps2"
+        },
+        {
+            "key": 3,
+            "value": "gps3"
+        },
+        {
+            "key": 4,
+            "value": "gps4"
+        }
+    ]
+}
+###
+#(just only 5 pages)
+GET localhost:8082/app/group/list
+###
+#(a default pageSize 7)
+GET localhost:8082/app/group/list?firstPage=0&pageSize=2
+
+answer:
+[
+    {
+        "id": 2,
+        "deviceGroupName": "GUGA",
+        "devices": []
+    },
+    {
+        "id": 1,
+        "deviceGroupName": "group1",
+        "devices": []
+    },
+    {
+        "id": 3,
+        "deviceGroupName": "group3",
+        "devices": []
+    },
+    {
+        "id": 4,
+        "deviceGroupName": "group4",
+        "devices": []
+    }
+]
+###
+PUT localhost:8082/app/group/update
+request:
+{
+    "id": 1,
+    "deviceGroupName": "FIFA",
+    "deviceIds": [4]
+}
+answer:
+{
+    "id": 1,
+    "deviceGroupName": "FIFA",
+    "devices": [
+        {
+            "key": 4,
+            "value": "gps4"
+        }
+    ]
+}
+###
+DELETE localhost:8082/app/group/deletebyid/1
+
+answer:
+{
+    "message": "DeviceGroup with id = 1 deleted."
+}
+###
+GRPC localhost:9090  putExternalGeoposition
+
+request:
+{
+	"trackTime": {
+		"seconds": "1691025000",
+		"nanos": 0
+		},
+	"longitude": 76.0,
+	"latitude": 23.0,
+    "altitude": 24,
+    "speed": 23,
+    "direction": 8,
+    "imei": "aaa333"
+}
+answer:
+{}

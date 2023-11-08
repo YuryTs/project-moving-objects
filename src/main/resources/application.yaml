@@ -19,6 +19,8 @@ spring:
         format_sql: true
   max:
     page_size: 5
+  default:
+    device_group_id: 1
 
   h2:
     console:

@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-
 @Entity
 @Table(name = "geopositions")
 public class Geoposition {

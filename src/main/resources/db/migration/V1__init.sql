@@ -21,7 +21,6 @@ create table geopositions
     alt                   double precision,
     speed                 double precision,
     direction             double precision,
---     device_id             bigserial,
     device_id             bigint references devices (id)
 );
 
