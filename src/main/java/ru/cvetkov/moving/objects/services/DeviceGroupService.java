@@ -8,7 +8,7 @@ import java.util.List;
 public interface DeviceGroupService {
     DeviceGroup createNewDeviceGroup(DeviceGroupDtoRq deviceGroupRq);
 
-    boolean deleteDeviceGroupById(Long deviceGroupId);
+    void deleteDeviceGroupById(Long deviceGroupId);
 
     DeviceGroup findDevicesByGroupName(String name);
 

@@ -25,7 +25,7 @@ public class Device {
     @JoinColumn(name = "device_groups_id", insertable = false, updatable = false)
     private DeviceGroup deviceGroup;
 
-    @Column(name = "device_group_id")
+    @Column(name = "device_groups_id")
     private Long deviceGroupId;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -59,7 +59,6 @@ public class Device {
         return "Device{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", deviceGroup=" + deviceGroup +
                 ", deviceGroupId=" + deviceGroupId +
                 ", geopositions=" + geopositions +
                 ", imei='" + imei + '\'' +

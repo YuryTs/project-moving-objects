@@ -52,9 +52,6 @@ public class DeviceGroupController {
         if (id <= 0){
             throw new ValidationException(new ErrorDto("INVALID_PARAM", "Your request shouldn`t be null."));
         }
-        if (!deviceGroupService.deleteDeviceGroupById(id)) {
-            throw  new ResourceNotFoundException("DeviceGroup with id = " + id + " not found.");
-        }
         return new ResponseEntity<>(new MessageAnswerDto("DeviceGroup with id = " + id + " was deleted."), HttpStatus.OK);
     }
 

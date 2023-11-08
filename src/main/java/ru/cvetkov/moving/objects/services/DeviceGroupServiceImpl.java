@@ -58,47 +58,25 @@ public class DeviceGroupServiceImpl implements DeviceGroupService {
     @Override
     @Transactional
     public DeviceGroup updateDeviceGroupByIdGroup(DeviceGroupDtoRq deviceGroupDtoRq) {
-        System.out.println("deviceGroupDtoRq ids =" + deviceGroupDtoRq.getDeviceIds());
-
         DeviceGroup deviceGroup = deviceGroupRepository.findById(deviceGroupDtoRq.getId()).orElseThrow(() -> new ResourceNotFoundException("Not fined group with id = " + deviceGroupDtoRq.getId()));
-        System.out.println("deviceGroup=" + deviceGroupRepository.getDeviceGroupByName(deviceGroup.getDeviceGroupName()));
-        System.out.println("deviceGroup List =" + deviceGroup.getDeviceList());
-
         if (StringUtils.isNotEmpty(deviceGroupDtoRq.getDeviceGroupName())) {
             deviceGroup.setDeviceGroupName(deviceGroupDtoRq.getDeviceGroupName());
         }
-        List<Device> devices = new ArrayList<>();
-        List<Long> newDeviceIds = deviceGroupDtoRq.getDeviceIds();
-        System.out.println("newDeviceIds=" + newDeviceIds);
-        if (deviceGroup != null) {
-            List<Long> oldDeviceIds = deviceGroup.getDeviceList().stream().map(d -> d.getId()).collect(Collectors.toList());
-            System.out.println("oldDeviceIds=" + oldDeviceIds);
-
-            List<Long> ejectedIds = oldDeviceIds.stream().filter(id -> !newDeviceIds.contains(id)).collect(Collectors.toList());
-            System.out.println("ejectedIds=" + ejectedIds);
-            ejectedIds.stream().forEach(id -> deviceRepository.findById(id).ifPresent(device -> {
-                device.setDeviceGroupId(DEFAULT_DEVICE_GROUP_ID);
-                deviceRepository.save(device);
-            }));
-        }
-        List<Device> devices1 = deviceGroupDtoRq.getDeviceIds().stream().map(id -> deviceRepository.findById(id).get()).collect(Collectors.toList());
-        System.out.println(devices1);
-        devices1.stream().forEach(device -> {
-            device.setDeviceGroupId(DEFAULT_DEVICE_GROUP_ID);
-            deviceRepository.save(device);
-        });
-        System.out.println("devices1="+devices1);
-        deviceGroupDtoRq.getDeviceIds().stream().forEach(id -> deviceRepository.findById(id).ifPresent(device -> {
-                    device.setDeviceGroupId(deviceGroupDtoRq.getId());
-                    deviceRepository.save(device);
-                    devices.add(device);
-                })
-        );
-        System.out.println(devices);
-        deviceGroup.setDeviceList(devices);
-        System.out.println("deviceGroup before save = " + deviceGroup);
         deviceGroupRepository.save(deviceGroup);
-        System.out.println("deviceGroup after save = " + deviceGroupRepository.getDeviceGroupByName("GUGA"));
+
+        List<Long> newDeviceIds = deviceGroupDtoRq.getDeviceIds();
+        if (deviceGroup.getDeviceList() != null) {
+            deviceGroup.getDeviceList().stream().forEach(d -> {
+                d.setDeviceGroupId(DEFAULT_DEVICE_GROUP_ID);
+                deviceRepository.save(d);
+            });
+            newDeviceIds.stream().forEach(id -> {
+                deviceRepository.findById(id).ifPresent(d -> {
+                    d.setDeviceGroupId(deviceGroupDtoRq.getId());
+                    deviceRepository.save(d);
+                });
+            });
+        }
         return deviceGroup;
     }
 
@@ -114,11 +92,17 @@ public class DeviceGroupServiceImpl implements DeviceGroupService {
     }
 
     @Override
-    public boolean deleteDeviceGroupById(Long deviceGroupId) {
-        boolean deleted = false;
+    @Transactional
+    public void deleteDeviceGroupById(Long deviceGroupId) {
+        DeviceGroup deviceGroup = deviceGroupRepository.findById(deviceGroupId).orElseThrow(() -> new ResourceNotFoundException("Not fined group with id = " + deviceGroupId));
+        if (deviceGroup.getDeviceList().isEmpty()) {
+            deviceGroupRepository.deleteById(deviceGroupId);
+        }
+        deviceGroup.getDeviceList().stream().forEach(d -> {
+            d.setDeviceGroupId(DEFAULT_DEVICE_GROUP_ID);
+            deviceRepository.save(d);
+        });
         deviceGroupRepository.deleteById(deviceGroupId);
-        deleted = true;
-        return deleted;
     }
 
     @Override
